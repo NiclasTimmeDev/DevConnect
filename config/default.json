@@ -1,0 +1,6 @@
+{
+    "mongoURI": "mongodb+srv://niclas:123@cluster0-7wwqb.mongodb.net/test?retryWrites=true&w=majority",
+    "jwtSecret": "DevConnectorWebToken",
+    "githubClientId": "7568a794ab79c71016e8",
+    "githubSecretKey": "43ee6c20940a13a8695cd8ac9027a3c8b87f165c"
+}
