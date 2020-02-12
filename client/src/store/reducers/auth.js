@@ -32,6 +32,7 @@ const auth = (state = initState, action) => {
     case types.LOGIN_FAIL:
     case types.REGISTER_FAIL:
     case types.LOGOUT:
+    case types.ACCOUNT_DELETED:
       localStorage.removeItem("token");
       return {
         ...state,

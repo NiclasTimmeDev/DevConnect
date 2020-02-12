@@ -11,6 +11,7 @@ const initState = {
 const reducer = (state = initState, action) => {
   switch (action.type) {
     case types.GET_PROFILE:
+    case types.UPDATE_PROFILE:
       return {
         ...state,
         profile: action.payload,
@@ -23,6 +24,7 @@ const reducer = (state = initState, action) => {
         loading: false
       };
     case types.LOGOUT:
+    case types.CLEAR_PROFILE:
       return {
         ...state,
         profile: null,

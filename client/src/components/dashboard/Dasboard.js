@@ -5,15 +5,35 @@ import { getCurrentProfile } from "./../../store/actions/profile";
 import Spinner from "./../layout/Spinner";
 import { Link } from "react-router-dom";
 import DashboardActions from "./DashboardActions";
+import Experience from "./Experience";
+import Education from "./Education";
+import { deleteAccount } from "./../../store/actions/profile";
 
 const Dasboard = props => {
   useEffect(() => {
+    console.log("use effect");
     props.getCurrentProfile();
   }, []);
 
   const profile = (
     <Fragment>
       <DashboardActions />
+      {props.profile.profile && !props.profile.loading ? (
+        <Fragment>
+          <Experience experiences={props.profile.profile.experience} />
+          <Education education={props.profile.profile.education} />
+          <div className="my-2">
+            <button
+              className="btn btn-danger"
+              onClick={() => {
+                props.deleteAccount();
+              }}
+            >
+              Delete Account
+            </button>
+          </div>
+        </Fragment>
+      ) : null}
     </Fragment>
   );
 
@@ -51,4 +71,6 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(mapStateToProps, { getCurrentProfile })(Dasboard);
+export default connect(mapStateToProps, { getCurrentProfile, deleteAccount })(
+  Dasboard
+);
