@@ -13,7 +13,7 @@ const postSchema = new mongoose.Schema({
     type: String
   },
   avatar: {
-    String: String
+    type: String
   },
   date: {
     type: Date,
@@ -37,7 +37,7 @@ const postSchema = new mongoose.Schema({
   ],
   comments: [
     {
-      users: {
+      user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User" // tells Mongoose which model to use during population (when using populate())
       },
@@ -49,7 +49,7 @@ const postSchema = new mongoose.Schema({
         type: String
       },
       avatar: {
-        String: String
+        type: String
       },
       date: {
         type: Date,

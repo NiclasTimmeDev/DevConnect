@@ -1,6 +1,5 @@
 import React, { Fragment, useState } from "react";
 import validator from "validator";
-import axios from "axios";
 import { Link, Redirect } from "react-router-dom";
 import { login } from "./../../store/actions/auth";
 import PropTypes from "prop-types";

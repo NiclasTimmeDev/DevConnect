@@ -10,6 +10,12 @@ const initState = {
 
 const reducer = (state = initState, action) => {
   switch (action.type) {
+    case types.GET_PROFILES:
+      return {
+        ...state,
+        profiles: action.payload,
+        loading: false
+      };
     case types.GET_PROFILE:
     case types.UPDATE_PROFILE:
       return {
@@ -17,9 +23,15 @@ const reducer = (state = initState, action) => {
         profile: action.payload,
         loading: false
       };
+    case types.GET_REPOS:
+      return {
+        ...state,
+        repos: action.payload
+      };
     case types.PROFILE_ERROR:
       return {
         ...state,
+        profile: null,
         error: action.payload,
         loading: false
       };

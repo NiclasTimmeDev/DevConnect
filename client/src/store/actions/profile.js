@@ -23,6 +23,73 @@ export const getCurrentProfile = () => {
   };
 };
 
+export const getAllProfiles = () => {
+  return async dispatch => {
+    try {
+      const res = await axios.get("/api/profile/all");
+      if (res.status === 200) {
+        dispatch({
+          type: types.GET_PROFILES,
+          payload: res.data
+        });
+      }
+    } catch (error) {
+      console.log(error.message);
+      dispatch({
+        type: types.PROFILE_ERROR,
+        payload: {
+          msg: error.response.statusText,
+          status: error.response.status
+        }
+      });
+    }
+  };
+};
+export const getProfileById = userId => {
+  return async dispatch => {
+    try {
+      const res = await axios.get(`/api/profile/${userId}`);
+      if (res.status === 200) {
+        dispatch({
+          type: types.GET_PROFILE,
+          payload: res.data
+        });
+      }
+    } catch (error) {
+      console.log(error.message);
+      dispatch({
+        type: types.PROFILE_ERROR,
+        payload: {
+          msg: error.response.statusText,
+          status: error.response.status
+        }
+      });
+    }
+  };
+};
+export const getGitHubRepos = username => {
+  return async dispatch => {
+    try {
+      const res = await axios.get(`/api/profile/github/${username}`);
+      if (res.status === 200) {
+        dispatch({
+          type: types.GET_REPOS,
+          payload: res.data
+        });
+      }
+    } catch (error) {
+      console.log(error.message);
+      dispatch({
+        type: types.PROFILE_ERROR,
+        payload: {
+          msg: error.response.statusText,
+          status: error.response.status
+        }
+      });
+    }
+  };
+};
+
 export const createProfile = (formData, history, edit = false) => {
   return async dispatch => {
     try {
@@ -159,7 +226,7 @@ export const deleteAccount = () => {
   return async dispatch => {
     if (window.confirm("Are you sure? This can NOT be undone")) {
       try {
-        const res = await axios.delete(`/api/profile`);
+        await axios.delete(`/api/profile`);
         dispatch({
           type: types.CLEAR_PROFILE
         });

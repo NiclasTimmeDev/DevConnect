@@ -5,13 +5,15 @@ import thunk from "redux-thunk";
 import alert from "./reducers/alert";
 import auth from "./reducers/auth";
 import profile from "./reducers/profile";
+import post from "./reducers/post";
 
 const initState = {};
 
 const rootReducer = combineReducers({
   alert,
   auth,
-  profile
+  profile,
+  post
 });
 
 const middleware = [thunk];

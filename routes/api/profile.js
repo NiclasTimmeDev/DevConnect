@@ -163,6 +163,7 @@ router.get("/:user_id", async (req, res) => {
     }).populate("user", ["name", "avatar"]);
     //3:
     if (!profile) {
+      console.log("USER NOT FOUND");
       return res.status(400).send("Profile not found");
     }
 

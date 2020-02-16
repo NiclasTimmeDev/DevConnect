@@ -8,10 +8,20 @@ const Navbar = props => {
   const authLinks = (
     <ul>
       <li>
+        <Link to="/profiles">Developers</Link>
+      </li>
+      <li>
+        <Link to="/posts">
+          <span className="hide-sm">Posts</span>
+        </Link>
+      </li>
+      <li>
         <Link to="/dashboard">
           <span className="hide-sm">Dashboard</span>{" "}
           <i className="fas fa-user"></i>
         </Link>
+      </li>
+      <li>
         <Link to="" onClick={props.logout}>
           <span className="hide-sm">Logout</span>{" "}
           <i className="fas fa-sign-out-alt"></i>

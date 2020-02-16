@@ -5,7 +5,7 @@ import {
   createProfile,
   getCurrentProfile
 } from "./../../store/actions/profile";
-import { Link, withRouter } from "react-router-dom";
+import { withRouter } from "react-router-dom";
 
 const EditProfile = props => {
   const [formData, setFormData] = useState({

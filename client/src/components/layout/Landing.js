@@ -1,7 +1,5 @@
 import React from "react";
 import { Link, Redirect } from "react-router-dom";
-import Login from "./../auth/Login";
-import Register from "./../auth/Register";
 import { connect } from "react-redux";
 
 const Landing = props => {

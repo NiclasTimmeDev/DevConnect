@@ -21,38 +21,38 @@ FUNCTIONALITY
 4. save post and send it to the client
 */
 router.post(
-    "/",
-    [
-        //1:
-        auth,
-        check("text", "Text is required")
-            .not()
-            .isEmpty()
-    ],
-    async (req, res) => {
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
-            return res.status(400).send({ errors: errors.array() });
-        }
-
-        try {
-            //2:
-            const user = await User.findById(req.user._id).select("-password");
-            //3:
-            const newPost = new Post({
-                text: req.body.text,
-                user: user._id,
-                name: user.name,
-                avatar: user.avatar
-            });
-            //4:
-            const post = await newPost.save();
-            res.status(201).send(post);
-        } catch (e) {
-            console.error(e.message);
-            res.status(500).send("server error");
-        }
+  "/",
+  [
+    //1:
+    auth,
+    check("text", "Text is required")
+      .not()
+      .isEmpty()
+  ],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).send({ errors: errors.array() });
     }
+
+    try {
+      //2:
+      const user = await User.findById(req.user._id).select("-password");
+      //3:
+      const newPost = new Post({
+        text: req.body.text,
+        user: user._id,
+        name: user.name,
+        avatar: user.avatar
+      });
+      //4:
+      const post = await newPost.save();
+      res.status(201).send(post);
+    } catch (e) {
+      console.error(e.message);
+      res.status(500).send("server error");
+    }
+  }
 );
 
 //@route    GET /api/posts
@@ -65,15 +65,15 @@ FUNCTIONALITY
 2. send all posts to client
 */
 router.get("/", auth, async (req, res) => {
-    try {
-        //1:
-        const posts = await Post.find().sort({ date: -1 });
-        //2:
-        res.status(200).send(posts);
-    } catch (e) {
-        console.error(e.message);
-        res.status(500).send("server error");
-    }
+  try {
+    //1:
+    const posts = await Post.find().sort({ date: -1 });
+    //2:
+    res.status(200).send(posts);
+  } catch (e) {
+    console.error(e.message);
+    res.status(500).send("server error");
+  }
 });
 //@route    GET /api/posts/:post_id
 //@desc     fetch single posts
@@ -86,22 +86,22 @@ FUNCTIONALITY
 3. send post to client
 */
 router.get("/:post_id", auth, async (req, res) => {
-    try {
-        //1:
-        const post = await Post.findById(req.params.post_id);
-        //2:
-        if (!post) {
-            return res.status(404).send("post not found");
-        }
-        //3:
-        res.status(200).send(post);
-    } catch (e) {
-        console.error(e.message);
-        if (e.kind === "ObjectId") {
-            return res.status(400).send("Profile not found");
-        }
-        res.status(500).send("server error");
+  try {
+    //1:
+    const post = await Post.findById(req.params.post_id);
+    //2:
+    if (!post) {
+      return res.status(404).send("post not found");
     }
+    //3:
+    res.status(200).send(post);
+  } catch (e) {
+    console.error(e.message);
+    if (e.kind === "ObjectId") {
+      return res.status(400).send("Profile not found");
+    }
+    res.status(500).send("server error");
+  }
 });
 
 //@route    DELETE /api/posts/:post_id
@@ -116,31 +116,31 @@ FUNCTIONALITY
 4. If creatpr of the post (post.user) and the person trying to delete it (rew.user._id) do not match, deletion should be denied
 5. Delete post
 */
-router.get("/:post_id", auth, async (req, res) => {
-    try {
-        //1:
-        const post = await Post.findBy(req.params.post_id);
+router.delete("/:post_id", auth, async (req, res) => {
+  try {
+    //1:
+    const post = await Post.findById(req.params.post_id);
 
-        //2:
-        if (!post) {
-            return res.status(404).send("post not found");
-        }
-
-        //4;
-        if (post.user.toString() !== req.user._id) {
-            return res.status(401).send("not authorized");
-        }
-
-        //5:
-        await Post.deleteOne({ _id: req.params.post_id });
-        res.status(200).send("post deleted");
-    } catch (e) {
-        console.error(e.message);
-        if (e.kind === "ObjectId") {
-            return res.status(400).send("Post not found");
-        }
-        res.status(500).send("server error");
+    //2:
+    if (!post) {
+      return res.status(404).send("post not found");
     }
+
+    //4;
+    if (post.user.toString() !== req.user._id) {
+      return res.status(401).send("not authorized");
+    }
+
+    //5:
+    await Post.deleteOne({ _id: req.params.post_id });
+    res.status(200).send("post deleted");
+  } catch (e) {
+    console.error(e.message);
+    if (e.kind === "ObjectId") {
+      return res.status(400).send("Post not found");
+    }
+    res.status(500).send("server error");
+  }
 });
 
 //@route    PUT /api/posts/like/:post_id
@@ -157,33 +157,35 @@ FUNCTIONALITY
 4. Put new like on top of the likes array
 */
 router.put("/like/:post_id", auth, async (req, res) => {
-    try {
-        //1:
-        const post = await Post.findById(req.params.post_id);
+  try {
+    //1:
+    const post = await Post.findById(req.params.post_id);
 
-        //2:
-        if (!post) {
-            return res.status(404).send("post not found");
-        }
-
-        //3:
-        const postAlreadyLiked = post.likes.some(like => like.user.toString() === req.user._id);
-        if (postAlreadyLiked) {
-            return res.status(400).send("post already liked");
-        }
-
-        //4:
-        post.likes.unshift({ user: req.user._id });
-
-        await post.save();
-        res.status(200).send(post.likes);
-    } catch (e) {
-        console.error(e.message);
-        if (e.kind === "ObjectId") {
-            return res.status(400).send("Post not found");
-        }
-        res.status(500).send("server error");
+    //2:
+    if (!post) {
+      return res.status(404).send("post not found");
     }
+
+    //3:
+    const postAlreadyLiked = post.likes.some(
+      like => like.user.toString() === req.user._id
+    );
+    if (postAlreadyLiked) {
+      return res.status(400).send("post already liked");
+    }
+
+    //4:
+    post.likes.unshift({ user: req.user._id });
+
+    await post.save();
+    res.status(200).send(post.likes);
+  } catch (e) {
+    console.error(e.message);
+    if (e.kind === "ObjectId") {
+      return res.status(400).send("Post not found");
+    }
+    res.status(500).send("server error");
+  }
 });
 //@route    PUT /api/posts/like/:post_id
 //@desc     unlike a post
@@ -199,36 +201,39 @@ FUNCTIONALITY
 4. Filter through all likes and return new array where the one tha should be unliked is deleted. Then set the likes array to the updated array
 */
 router.put("/unlike/:post_id", auth, async (req, res) => {
-    try {
-        //1:
-        const post = await Post.findById(req.params.post_id);
+  try {
+    //1:
+    const post = await Post.findById(req.params.post_id);
 
-        //2:
-        if (!post) {
-            return res.status(404).send("post not found");
-        }
-
-        //3:
-        const postNotLiked = !post.likes.some(like => like.user.toString() === req.user._id);
-        if (postNotLiked) {
-            return res.status(400).send("Post has not been liked");
-        }
-
-        //4;
-        const newLikesArray = post.likes.filter(like => like.user.toString() !== req.user._id);
-        post.likes = newLikesArray;
-
-        await post.save();
-        res.status(200).send(post.likes);
-    } catch (e) {
-        console.error(e.message);
-        if (e.kind === "ObjectId") {
-            return res.status(400).send("Post not found");
-        }
-        res.status(500).send("server error");
+    //2:
+    if (!post) {
+      return res.status(404).send("post not found");
     }
-});
 
+    //3:
+    const postNotLiked = !post.likes.some(
+      like => like.user.toString() === req.user._id
+    );
+    if (postNotLiked) {
+      return res.status(400).send("Post has not been liked");
+    }
+
+    //4;
+    const newLikesArray = post.likes.filter(
+      like => like.user.toString() !== req.user._id
+    );
+    post.likes = newLikesArray;
+
+    await post.save();
+    res.status(200).send(post.likes);
+  } catch (e) {
+    console.error(e.message);
+    if (e.kind === "ObjectId") {
+      return res.status(400).send("Post not found");
+    }
+    res.status(500).send("server error");
+  }
+});
 
 //@route    POST /api/posts/comment/:id
 //@desc     comment on a post
@@ -243,53 +248,51 @@ FUNCTIONALITY
 5. save post and send it to the client
 */
 router.post(
-    "/comment/:post_id",
-    [
-        //1:
-        auth,
-        check("text", "Text is required")
-            .not()
-            .isEmpty()
-    ],
-    async (req, res) => {
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
-            return res.status(400).send({ errors: errors.array() });
-        }
-
-        try {
-            //2:
-            const user = await User.findById(req.user._id).select("-password");
-
-            //3:
-            const post = await Post.findById(req.params.post_id);
-            if (!post) {
-                res.status(400).send("post not found");
-            }
-
-            //4:
-            const newComment = {
-                text: req.body.text,
-                user: user._id,
-                name: user.name,
-                avatar: user.avatar
-            };
-            post.comments.unshift(newComment);
-
-            //5:
-            await post.save();
-            res.status(201).send(post.comments);
-
-        } catch (e) {
-            console.error(e.message);
-            if (e.kind === "ObjectId") {
-                return res.status(400).send("Post not found");
-            }
-            res.status(500).send("server error");
-        }
+  "/comment/:post_id",
+  [
+    //1:
+    auth,
+    check("text", "Text is required")
+      .not()
+      .isEmpty()
+  ],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).send({ errors: errors.array() });
     }
-);
 
+    try {
+      //2:
+      const user = await User.findById(req.user._id).select("-password");
+
+      //3:
+      const post = await Post.findById(req.params.post_id);
+      if (!post) {
+        res.status(400).send("post not found");
+      }
+
+      //4:
+      const newComment = {
+        text: req.body.text,
+        user: user._id,
+        name: user.name,
+        avatar: user.avatar
+      };
+      post.comments.unshift(newComment);
+
+      //5:
+      await post.save();
+      res.status(201).send(post.comments);
+    } catch (e) {
+      console.error(e.message);
+      if (e.kind === "ObjectId") {
+        return res.status(400).send("Post not found");
+      }
+      res.status(500).send("server error");
+    }
+  }
+);
 
 //@route    DELETE /api/posts/comment/:post_id/:comment_id
 //@desc     delete a comment
@@ -305,35 +308,34 @@ FUNCTIONALITY
 */
 
 router.delete("/comment/:post_id/:comment_id", auth, async (req, res) => {
-    try {
-        //1:
-        const post = await Post.findById(req.params.post_id);
-        if (!post) {
-            return res.status(400).send("post not found");
-        }
-
-        //2:
-        if (post.user.toString() !== req.user._id) {
-            return res.status(401).send("not authorized");
-        }
-
-        //3:
-        const newCommentsArray = post.comments.filter(comment => {
-            return comment._id.toString() !== req.params.comment_id;
-        });
-        post.comments = newCommentsArray;
-
-        //4:
-        await post.save();
-        res.status(200).send(post.comments);
-    } catch (e) {
-        console.error(e.message);
-        if (e.kind === "ObjectId") {
-            return res.status(400).send("Post not found");
-        }
-        res.status(500).send("server error");
+  try {
+    //1:
+    const post = await Post.findById(req.params.post_id);
+    if (!post) {
+      return res.status(400).send("post not found");
     }
 
-})
+    //2:
+    if (post.user.toString() !== req.user._id) {
+      return res.status(401).send("not authorized");
+    }
+
+    //3:
+    const newCommentsArray = post.comments.filter(comment => {
+      return comment._id.toString() !== req.params.comment_id;
+    });
+    post.comments = newCommentsArray;
+
+    //4:
+    await post.save();
+    res.status(200).send(post.comments);
+  } catch (e) {
+    console.error(e.message);
+    if (e.kind === "ObjectId") {
+      return res.status(400).send("Post not found");
+    }
+    res.status(500).send("server error");
+  }
+});
 
 module.exports = router;

@@ -1,12 +1,10 @@
 import React, { Fragment, useState } from "react";
 import validator from "validator";
-import axios from "axios";
 import { Link, Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 import setAlert from "./../../store/actions/alert";
 import { register } from "./../../store/actions/auth";
 import PropTypes from "prop-types";
-import * as registerActions from "./../../store/actions/auth";
 
 const Register = props => {
   const [formData, setFormData] = useState({
